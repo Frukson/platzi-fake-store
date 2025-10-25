@@ -1,1 +1,0 @@
-# platzi-fake-store
