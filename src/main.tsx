@@ -8,6 +8,7 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import NotFoundPage from './components/NotFoundPage'
 
 const queryClient = new QueryClient()
 
@@ -34,7 +35,10 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={router}
+          defaultNotFoundComponent={NotFoundPage}
+        />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </StrictMode>,
