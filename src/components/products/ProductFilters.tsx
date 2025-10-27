@@ -60,6 +60,7 @@ export default function ProductFilters({
             Search by title
           </label>
           <input
+            data-testid="filter-search-input"
             type="text"
             value={localTitle}
             onChange={(e) => setLocalTitle(e.target.value)}
@@ -76,6 +77,7 @@ export default function ProductFilters({
             Category
           </label>
           <select
+            data-testid="filter-category-select"
             value={categoryId}
             onChange={(e) => onCategoryChange(Number(e.target.value))}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -94,6 +96,7 @@ export default function ProductFilters({
             Min Price ($)
           </label>
           <input
+            data-testid="filter-min-price-input"
             type="number"
             value={priceMin ?? ''}
             onChange={(e) =>
@@ -112,6 +115,7 @@ export default function ProductFilters({
             Max Price ($)
           </label>
           <input
+            data-testid="filter-max-price-input"
             type="number"
             value={priceMax ?? ''}
             onChange={(e) =>
@@ -130,6 +134,7 @@ export default function ProductFilters({
         <div className="flex items-center space-x-4">
           <label className="text-sm font-medium text-gray-700">Sort by:</label>
           <select
+            data-testid="filter-sort-by-select"
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value)}
             className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
@@ -138,6 +143,7 @@ export default function ProductFilters({
             <option value="price">Price</option>
           </select>
           <button
+            data-testid="filter-sort-order-button"
             onClick={onSortOrderToggle}
             className="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors flex items-center space-x-1"
           >
@@ -146,6 +152,7 @@ export default function ProductFilters({
           </button>
         </div>
         <button
+          data-testid="filter-reset-button"
           onClick={onReset}
           className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
         >

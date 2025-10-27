@@ -1,16 +1,17 @@
 import { Link } from '@tanstack/react-router'
 import type { Product } from '@/types/product.types'
-import { useState } from 'react'
-import DeleteProductModal from '../modals/DeleteProductModal'
 
 interface ProductCardProps {
   product: Product
+  onDelete?: (productId: number, productTitle: string) => void
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+export default function ProductCard({ product, onDelete }: ProductCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group">
+    <div
+      data-testid="product-card"
+      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group"
+    >
       {/* Product Image */}
       <Link
         to="/products/$productId"
@@ -18,8 +19,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         className="relative h-48 bg-gray-100 overflow-hidden block"
         tabIndex={-1}
         aria-label={product.title}
+        data-testid="product-image-link"
       >
         <img
+          data-testid="product-image"
           src={product.images[0]}
           alt={product.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -27,7 +30,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             e.currentTarget.src = 'https://placehold.co/300x200?text=No%20image'
           }}
         />
-        <div className="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-bold text-gray-900 shadow-md">
+        <div
+          data-testid="product-price"
+          className="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-bold text-gray-900 shadow-md"
+        >
           ${product.price}
         </div>
       </Link>
@@ -35,20 +41,30 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Product Info */}
       <div className="p-4">
         <div className="mb-2">
-          <span className="inline-block bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
+          <span
+            data-testid="product-category-badge"
+            className="inline-block bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded"
+          >
             {product.category.name}
           </span>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 min-h-14">
+        <h3
+          data-testid="product-title"
+          className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 min-h-14"
+        >
           {product.title}
         </h3>
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-10">
+        <p
+          data-testid="product-description"
+          className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-10"
+        >
           {product.description}
         </p>
 
         {/* Actions */}
         <div className="flex items-center space-x-2">
           <Link
+            data-testid="product-view-link"
             to="/products/$productId"
             params={{ productId: product.id.toString() }}
             className="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
@@ -56,6 +72,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             View
           </Link>
           <Link
+            data-testid="product-edit-link"
             to="/products/$productId/edit"
             params={{ productId: product.id.toString() }}
             className="flex-1 bg-gray-200 text-gray-700 text-center py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
@@ -63,7 +80,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             Edit
           </Link>
           <button
-            onClick={() => setIsDeleteModalOpen(true)}
+            data-testid="product-delete-button"
+            onClick={() => onDelete?.(product.id, product.title)}
             className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Delete product"
           >
@@ -83,12 +101,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
       </div>
-      <DeleteProductModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        productId={product.id}
-        productName={product.title}
-      />
     </div>
   )
 }

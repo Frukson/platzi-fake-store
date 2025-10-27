@@ -35,6 +35,8 @@ export default function DeleteProductModal({
         old.filter((p) => p.id !== productId),
       )
 
+      onClose()
+
       return { previousProducts }
     },
     onError: (err, variables, context) => {
@@ -42,14 +44,17 @@ export default function DeleteProductModal({
       if (context?.previousProducts) {
         queryClient.setQueryData(['products'], context.previousProducts)
       }
+      onClose()
       console.error('Failed to delete product:', err)
     },
     onSettled: () => {
       // Refetch to ensure sync with server
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      onClose()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      onClose()
       navigate({ to: '/' })
     },
   })
@@ -89,6 +94,7 @@ export default function DeleteProductModal({
       ref={modalRef}
       onClick={handleBackdropClick}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-fadeIn"
+      data-testid="delete-product-modal"
     >
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-slideUp">
         <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
@@ -108,13 +114,13 @@ export default function DeleteProductModal({
         </div>
 
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
-          Delete Product?
+          Delete Product?x
         </h2>
 
         <p className="text-gray-600 text-center mb-6">
           Are you sure you want to delete{' '}
           <span className="font-semibold text-gray-900">"{productName}"</span>?
-          This action cannot be undone.
+          This action cannot be undone.d
         </p>
 
         {deleteMutation.isError && (

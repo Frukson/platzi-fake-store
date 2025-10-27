@@ -4,7 +4,7 @@ import {
   useNavigate,
   Link,
 } from '@tanstack/react-router'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getProducts, getCategories } from '@/api/products'
 import type { ProductsQueryParams } from '@/types/product.types'
@@ -16,6 +16,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { useProductSort } from '@/hooks/useProductSort'
 import { z } from 'zod'
+import DeleteProductModal from '@/components/modals/DeleteProductModal'
 
 export const ITEMS_PER_PAGE = 12
 
@@ -51,6 +52,11 @@ export const Route = createFileRoute('/')({
 export function ProductsPage() {
   const filters = useSearch({ from: Route.id })
   const navigate = useNavigate({ from: Route.id })
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteProductData, setDeleteProductData] = useState<{
+    id: number
+    title: string
+  } | null>(null)
 
   const updateFilters = useCallback(
     (newFilters: Partial<ProductsSearchParams>, resetPage = true) => {
@@ -125,9 +131,10 @@ export function ProductsPage() {
 
   return (
     <div className="bg-linear-to-br from-blue-50 via-white to-purple-50 flex-1 flex flex-col">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col">
         <div className="mb-4 flex justify-start">
           <Link
+            data-testid="create-product-button"
             to="/products/new"
             className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
@@ -171,21 +178,33 @@ export function ProductsPage() {
           !productsError &&
           sortedProducts.length === 0 && <EmptyState onReset={resetFilters} />}
 
-        {!isLoadingProducts && !productsError && sortedProducts.length > 0 && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-              {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          {!isLoadingProducts &&
+            !productsError &&
+            sortedProducts.length > 0 &&
+            sortedProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onDelete={(productId, productTitle) => {
+                  setDeleteProductData({ id: productId, title: productTitle })
+                  setIsDeleteModalOpen(true)
+                }}
+              />
+            ))}
+        </div>
         <Pagination
           currentPage={filters.page}
           hasMore={products.length >= ITEMS_PER_PAGE}
           onPageChange={(page) => updateFilters({ page }, false)}
         />
       </div>
+      <DeleteProductModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        productId={deleteProductData?.id ?? 0}
+        productName={deleteProductData?.title ?? ''}
+      />
     </div>
   )
 }

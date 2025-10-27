@@ -27,7 +27,7 @@ export const Route = createFileRoute('/login/')({
   component: LoginPage,
 })
 
-function LoginPage() {
+export function LoginPage() {
   const navigate = useNavigate()
   const [wasUnauthorized, setWasUnauthorized] = useState(false)
 
