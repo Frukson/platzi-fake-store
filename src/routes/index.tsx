@@ -21,6 +21,7 @@ import {
   categoriesCacheTime,
   productsCacheTime,
 } from '@/constants/globalConfig'
+import { useProductsFilters } from '@/hooks/useProductFilters'
 
 export const ITEMS_PER_PAGE = 12
 
@@ -59,6 +60,7 @@ export function ProductsPage() {
     id: number
     title: string
   } | null>(null)
+  const { saveFilters } = useProductsFilters()
 
   const updateFilters = useCallback(
     (newFilters: Partial<ProductsSearchParams>, resetPage = true) => {
@@ -66,17 +68,17 @@ export function ProductsPage() {
         search: (prev: ProductsSearchParams) => {
           const updated = { ...prev, ...newFilters }
 
-          // Reset page to 1 when filters change (unless explicitly disabled)
           if (resetPage && !newFilters.hasOwnProperty('page')) {
             updated.page = 1
           }
 
-          // Clean up empty values
           const cleaned = Object.fromEntries(
             Object.entries(updated).filter(([_, value]) => {
               return value !== '' && value !== undefined
             }),
           )
+
+          saveFilters(cleaned as ProductsSearchParams)
 
           return cleaned as ProductsSearchParams
         },

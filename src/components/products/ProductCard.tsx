@@ -75,6 +75,7 @@ export default function ProductCard({ product, onDelete }: ProductCardProps) {
             data-testid="product-edit-link"
             to="/products/$productId/edit"
             params={{ productId: product.id.toString() }}
+            state={{ from: 'products-list' }}
             className="flex-1 bg-gray-200 text-gray-700 text-center py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
           >
             Edit

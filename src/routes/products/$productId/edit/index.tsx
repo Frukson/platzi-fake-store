@@ -1,4 +1,8 @@
-import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  useNavigate,
+  useLocation,
+} from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -15,6 +19,7 @@ import SubmitButton from '@/components/forms/SubmitButton'
 import { z } from 'zod'
 import { showToast } from '@/utils/toast'
 import { productsCacheTime } from '@/constants/globalConfig'
+import { useProductsFilters } from '@/hooks/useProductFilters'
 
 export const updateProductSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
@@ -39,10 +44,11 @@ export const Route = createFileRoute('/products/$productId/edit/')({
 })
 
 function EditProductPage() {
+  const location = useLocation()
   const { productId } = Route.useParams()
   const navigate = useNavigate()
-  const router = useRouter()
   const queryClient = useQueryClient()
+  const { getFilters } = useProductsFilters()
 
   const { data: product, isLoading: isLoadingProduct } = useQuery({
     queryKey: ['product', productId],
@@ -97,6 +103,27 @@ function EditProductPage() {
       navigate({ to: '/products/$productId', params: { productId } })
     },
   })
+
+  const handleBack = () => {
+    const from = location.state.from
+
+    if (from === 'products-list') {
+      const filters = getFilters()
+      navigate({
+        to: '/',
+        search: filters || undefined,
+      })
+    } else if (from === 'product-card') {
+      navigate({
+        to: '/products/$productId',
+        params: { productId },
+      })
+    } else {
+      navigate({
+        to: '/',
+      })
+    }
+  }
 
   const onSubmit = (data: UpdateProductFormData) => {
     updateMutation.mutate(data)
@@ -255,7 +282,7 @@ function EditProductPage() {
               </SubmitButton>
               <button
                 type="button"
-                onClick={() => router.history.back()}
+                onClick={handleBack}
                 className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 focus:ring-4 focus:ring-gray-300 transition-all"
               >
                 Cancel

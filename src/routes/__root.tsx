@@ -9,6 +9,12 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 
+declare module '@tanstack/react-router' {
+  interface HistoryState {
+    from?: 'product-card' | 'products-list'
+  }
+}
+
 export const Route = createRootRoute({
   beforeLoad: () => {
     if (location.pathname === '/login') return

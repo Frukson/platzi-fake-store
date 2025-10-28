@@ -1,4 +1,5 @@
-import { Link } from '@tanstack/react-router'
+import { useProductsFilters } from '@/hooks/useProductFilters'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 interface ProductActionsProps {
   productId: number
@@ -9,6 +10,17 @@ export default function ProductActions({
   productId,
   onDelete,
 }: ProductActionsProps) {
+  const { getFilters } = useProductsFilters()
+  const navigate = useNavigate()
+
+  const handleBack = () => {
+    const savedFilters = getFilters()
+    navigate({
+      to: '/',
+      search: savedFilters || undefined,
+    })
+  }
+
   return (
     <>
       <div className="flex flex-col sm:flex-row gap-3">
@@ -16,6 +28,7 @@ export default function ProductActions({
           to="/products/$productId/edit"
           params={{ productId: productId.toString() }}
           className="flex-1 bg-blue-600 text-white text-center py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          state={{ from: 'product-card' }}
         >
           Edit product
         </Link>
@@ -28,8 +41,8 @@ export default function ProductActions({
       </div>
 
       <div className="mt-4">
-        <Link
-          to="/"
+        <button
+          onClick={handleBack}
           className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center justify-center"
         >
           <svg
@@ -46,7 +59,7 @@ export default function ProductActions({
             />
           </svg>
           Back to product list
-        </Link>
+        </button>
       </div>
     </>
   )

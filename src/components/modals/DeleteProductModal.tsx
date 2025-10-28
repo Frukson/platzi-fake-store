@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { deleteProduct } from '@/api/products'
 import { showToast } from '@/utils/toast'
+import { useProductsFilters } from '@/hooks/useProductFilters'
 
 interface DeleteProductModalProps {
   isOpen: boolean
@@ -20,6 +21,7 @@ export default function DeleteProductModal({
   const modalRef = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { getFilters } = useProductsFilters()
 
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
@@ -27,7 +29,11 @@ export default function DeleteProductModal({
       showToast.success('Product deleted successfully!')
       queryClient.invalidateQueries({ queryKey: ['products'] })
       handleClose()
-      navigate({ to: '/' })
+      const savedFilters = getFilters()
+      navigate({
+        to: '/',
+        search: savedFilters || undefined,
+      })
     },
   })
 

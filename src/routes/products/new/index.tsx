@@ -11,6 +11,7 @@ import SubmitButton from '@/components/forms/SubmitButton'
 import { z } from 'zod'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { showToast } from '@/utils/toast'
+import { useProductsFilters } from '@/hooks/useProductFilters'
 
 const createProductSchema = z.object({
   title: z
@@ -53,6 +54,7 @@ export const Route = createFileRoute('/products/new/')({
 function CreateProductPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { getFilters } = useProductsFilters()
 
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories'],
@@ -97,6 +99,14 @@ function CreateProductPage() {
     createMutation.mutate({
       ...data,
       images: filteredImages,
+    })
+  }
+
+  const handleBack = () => {
+    const filters = getFilters()
+    navigate({
+      to: '/',
+      search: filters || undefined,
     })
   }
   return (
@@ -239,7 +249,7 @@ function CreateProductPage() {
               </SubmitButton>
               <button
                 type="button"
-                onClick={() => navigate({ to: '/' })}
+                onClick={handleBack}
                 disabled={createMutation.isPending}
                 className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 focus:ring-4 focus:ring-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
