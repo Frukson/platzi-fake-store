@@ -114,13 +114,13 @@ export default function DeleteProductModal({
         </div>
 
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
-          Delete Product?x
+          Delete Product?
         </h2>
 
         <p className="text-gray-600 text-center mb-6">
           Are you sure you want to delete{' '}
           <span className="font-semibold text-gray-900">"{productName}"</span>?
-          This action cannot be undone.d
+          This action cannot be undone.
         </p>
 
         {deleteMutation.isError && (

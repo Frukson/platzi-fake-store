@@ -23,8 +23,6 @@ export const ITEMS_PER_PAGE = 12
 export const defaultSearchParams = {
   title: '',
   categoryId: 0,
-  price_min: 0,
-  price_max: 9999,
   offset: 0,
   sortBy: 'title',
   sortOrder: 'asc',
@@ -34,8 +32,8 @@ export const defaultSearchParams = {
 export const productsSearchParamsSchema = z.object({
   title: z.string().max(100).default(defaultSearchParams.title),
   categoryId: z.coerce.number().min(0).default(defaultSearchParams.categoryId),
-  price_min: z.coerce.number().min(0).default(defaultSearchParams.price_min),
-  price_max: z.coerce.number().min(0).default(defaultSearchParams.price_max),
+  price_min: z.coerce.number().min(0).optional(),
+  price_max: z.coerce.number().min(0).optional(),
   offset: z.coerce.number().min(0).default(defaultSearchParams.offset),
   page: z.coerce.number().min(1).default(defaultSearchParams.page),
   sortBy: z.string().default(defaultSearchParams.sortBy),

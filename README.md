@@ -38,3 +38,10 @@ There is a known API issue with updating categories. When sending the category I
 
 ### 2. Refresh Token
 The refresh token functionality is not implemented because the API doesn't provide a way to test it by setting a custom expiration time.
+
+### 3. Price Range Filtering
+The API does not handle `price_min` and `price_max` parameters correctly when filtering products. Specifically:
+- Values of `0` are treated as undefined and ignored by the API
+- Providing only one parameter (either `price_min` or `price_max`) without the other results in no filtering being applied
+
+> Note: A fix has been implemented in `products.ts` → `getProducts()` method that automatically sets missing values (`price_min = 1` or `price_max = 999999`) and removes parameters equal to `0` to ensure proper filtering behavior.

@@ -17,12 +17,32 @@ const PRODUCTS_ENDPOINTS = {
 export const getProducts = async (
   params?: ProductsQueryParams
 ): Promise<Product[]> => {
+  const queryParams = params ? { ...params } : undefined;
+
+  if (queryParams) {
+    const { price_min, price_max } = queryParams;
+    // Remove parameters equal to 0 (API ignores them)
+    if (price_min === 0) delete queryParams.price_min;
+    if (price_max === 0) delete queryParams.price_max;
+
+    // If price_max is provided without price_min, set a minimum
+    if (price_max !== undefined && price_max !== 0 && price_min === undefined) {
+      queryParams.price_min = 1;
+    }
+
+    // If price_min is provided without price_max, set a maximum
+    if (price_min !== undefined && price_min !== 0 && price_max === undefined) {
+      queryParams.price_max = 999999;
+    }
+    }
+
   const { data } = await apiClient.get<Product[]>(
     PRODUCTS_ENDPOINTS.PRODUCTS,
-    { params }
-  )
-  return data
-}
+    { params: queryParams }
+  );
+  
+  return data;
+};
 
 // GET single product
 export const getProduct = async (id: number): Promise<Product> => {

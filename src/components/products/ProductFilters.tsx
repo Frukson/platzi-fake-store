@@ -35,23 +35,6 @@ export default function ProductFilters({
   onSortOrderToggle,
   onReset,
 }: ProductFiltersProps) {
-  const [localTitle, setLocalTitle] = useState(title)
-
-  // Debounce search to avoid excessive API calls
-  const debouncedTitle = useDebounce(localTitle, 300)
-
-  // Sync debounced value with parent
-  useEffect(() => {
-    if (debouncedTitle !== title) {
-      onTitleChange(debouncedTitle)
-    }
-  }, [debouncedTitle])
-
-  // Sync external changes back to local state
-  useEffect(() => {
-    setLocalTitle(title)
-  }, [title])
-
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -62,14 +45,11 @@ export default function ProductFilters({
           <input
             data-testid="filter-search-input"
             type="text"
-            value={localTitle}
-            onChange={(e) => setLocalTitle(e.target.value)}
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
             placeholder="Search products..."
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
-          {localTitle !== debouncedTitle && (
-            <p className="text-xs text-gray-500 mt-1">Searching...</p>
-          )}
         </div>
 
         <div>
@@ -104,7 +84,7 @@ export default function ProductFilters({
                 e.target.value ? Number(e.target.value) : undefined,
               )
             }
-            placeholder="0"
+            placeholder="Min price..."
             min="0"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
@@ -123,7 +103,7 @@ export default function ProductFilters({
                 e.target.value ? Number(e.target.value) : undefined,
               )
             }
-            placeholder="9999"
+            placeholder="Max price..."
             min="0"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
