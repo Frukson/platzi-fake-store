@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useDebounce } from '@/hooks/useDounbce'
 import type { Category } from '@/types/product.types'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
+import { defaultSearchParams } from '@/routes'
 
 interface ProductFiltersProps {
   title: string
@@ -35,6 +35,28 @@ export default function ProductFilters({
   onSortOrderToggle,
   onReset,
 }: ProductFiltersProps) {
+  const [localTitle, handleTitleChange] = useDebouncedValue(
+    title,
+    onTitleChange,
+  )
+
+  const [localPriceMin, handlePriceMinChange] = useDebouncedValue(
+    priceMin,
+    onPriceMinChange,
+  )
+
+  const [localPriceMax, handlePriceMaxChange] = useDebouncedValue(
+    priceMax,
+    onPriceMaxChange,
+  )
+
+  const handleReset = () => {
+    onReset()
+    handlePriceMaxChange(undefined)
+    handlePriceMinChange(undefined)
+    handleTitleChange(defaultSearchParams.title)
+  }
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -45,8 +67,8 @@ export default function ProductFilters({
           <input
             data-testid="filter-search-input"
             type="text"
-            value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
+            value={localTitle}
+            onChange={(e) => handleTitleChange(e.target.value)}
             placeholder="Search products..."
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
@@ -78,9 +100,9 @@ export default function ProductFilters({
           <input
             data-testid="filter-min-price-input"
             type="number"
-            value={priceMin ?? ''}
+            value={localPriceMin ?? ''}
             onChange={(e) =>
-              onPriceMinChange(
+              handlePriceMinChange(
                 e.target.value ? Number(e.target.value) : undefined,
               )
             }
@@ -97,9 +119,9 @@ export default function ProductFilters({
           <input
             data-testid="filter-max-price-input"
             type="number"
-            value={priceMax ?? ''}
+            value={localPriceMax ?? ''}
             onChange={(e) =>
-              onPriceMaxChange(
+              handlePriceMaxChange(
                 e.target.value ? Number(e.target.value) : undefined,
               )
             }
@@ -133,7 +155,7 @@ export default function ProductFilters({
         </div>
         <button
           data-testid="filter-reset-button"
-          onClick={onReset}
+          onClick={handleReset}
           className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
         >
           Reset Filters
