@@ -20,7 +20,7 @@ import DeleteProductModal from '@/components/modals/DeleteProductModal'
 import {
   categoriesCacheTime,
   productsCacheTime,
-} from '@/constants/globalConfig'
+} from '@/constants/cacheTimeConstants'
 import { useProductsFilters } from '@/hooks/useProductFilters'
 
 export const ITEMS_PER_PAGE = 12

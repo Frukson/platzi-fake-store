@@ -9,7 +9,6 @@ export const productsHandlers = [
     
     let filteredProducts = [...mockProducts]
     
-    // Możesz dodać logikę filtrowania
     if (categoryId && categoryId !== '0') {
       filteredProducts = filteredProducts.filter(
         p => p.category.id === parseInt(categoryId)

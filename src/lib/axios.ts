@@ -29,7 +29,6 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      console.log(error.response.status,'testt')
       const isAuthRequest = error.config?.url?.includes('/auth/login')
       
       const currentPath = window.location.pathname

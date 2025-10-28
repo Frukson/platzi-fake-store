@@ -10,7 +10,7 @@ import ProductInfo from '@/components/product-details/ProductInfo'
 import ProductDetails from '@/components/product-details/ProductDetails'
 import ProductActions from '@/components/product-details/ProductActions'
 import DeleteProductModal from '@/components/modals/DeleteProductModal'
-import { productsCacheTime } from '@/constants/globalConfig'
+import { productsCacheTime } from '@/constants/cacheTimeConstants'
 
 export const Route = createFileRoute('/products/$productId/')({
   component: ProductDetailPage,

@@ -18,7 +18,7 @@ import SubmitButton from '@/components/forms/SubmitButton'
 
 import { z } from 'zod'
 import { showToast } from '@/utils/toast'
-import { productsCacheTime } from '@/constants/globalConfig'
+import { productsCacheTime } from '@/constants/cacheTimeConstants'
 import { useProductsFilters } from '@/hooks/useProductFilters'
 
 export const updateProductSchema = z.object({

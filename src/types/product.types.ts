@@ -17,7 +17,7 @@ export interface Category {
   updatedAt: string
 }
 
-// Query params dla filtrowania i paginacji
+// Query params for filters and pagination
 export interface ProductsQueryParams {
   title?: string
   price?: number
