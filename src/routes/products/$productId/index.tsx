@@ -10,6 +10,7 @@ import ProductInfo from '@/components/product-details/ProductInfo'
 import ProductDetails from '@/components/product-details/ProductDetails'
 import ProductActions from '@/components/product-details/ProductActions'
 import DeleteProductModal from '@/components/modals/DeleteProductModal'
+import { productsCacheTime } from '@/constants/globalConfig'
 
 export const Route = createFileRoute('/products/$productId/')({
   component: ProductDetailPage,
@@ -27,6 +28,7 @@ function ProductDetailPage() {
   } = useQuery({
     queryKey: ['product', productId],
     queryFn: () => getProduct(Number(productId)),
+    staleTime: productsCacheTime,
   })
 
   if (isLoading) {

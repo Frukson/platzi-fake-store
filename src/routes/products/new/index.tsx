@@ -57,6 +57,8 @@ function CreateProductPage() {
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
+    staleTime: Infinity,
+    gcTime: Infinity,
   })
 
   const {

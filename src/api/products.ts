@@ -83,7 +83,7 @@ export const deleteProduct = async (id: number): Promise<boolean> => {
   return data
 }
 
-// GET all categories (dla filtrów)
+// GET all categories
 export const getCategories = async (): Promise<Category[]> => {
   const { data } = await apiClient.get<Category[]>(
     PRODUCTS_ENDPOINTS.CATEGORIES

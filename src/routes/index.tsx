@@ -17,6 +17,10 @@ import ErrorMessage from '@/components/ui/ErrorMessage'
 import { useProductSort } from '@/hooks/useProductSort'
 import { z } from 'zod'
 import DeleteProductModal from '@/components/modals/DeleteProductModal'
+import {
+  categoriesCacheTime,
+  productsCacheTime,
+} from '@/constants/globalConfig'
 
 export const ITEMS_PER_PAGE = 12
 
@@ -103,18 +107,19 @@ export function ProductsPage() {
   // Fetch products
   const {
     data: products = [],
-    isLoading: isLoadingProducts,
+    isPending: isLoadingProducts,
     error: productsError,
   } = useQuery({
     queryKey: ['products', queryParams],
     queryFn: () => getProducts(queryParams),
-    staleTime: 10 * 1000,
+    staleTime: productsCacheTime,
   })
 
   // Fetch categories
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
+    staleTime: categoriesCacheTime,
   })
 
   const sortedProducts = useProductSort({

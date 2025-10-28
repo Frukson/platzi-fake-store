@@ -13,6 +13,7 @@ export function Header() {
     queryKey: ['user-profile'],
     queryFn: getUserProfile,
     staleTime: Infinity,
+    gcTime: Infinity, // We don't have any mutation that updates the user profile
   })
 
   const handleLogout = () => {

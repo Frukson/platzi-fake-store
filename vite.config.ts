@@ -1,4 +1,3 @@
-import { URL, fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import viteReact from '@vitejs/plugin-react'
@@ -11,7 +10,7 @@ export default defineConfig({
   plugins: [
     tanstackRouter({
       target: 'react',
-      autoCodeSplitting: true,
+      autoCodeSplitting: true, // Lazy loading each route handle by file-based routing
     }),
     viteReact(),
     tailwindcss(),

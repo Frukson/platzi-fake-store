@@ -14,6 +14,7 @@ import SubmitButton from '@/components/forms/SubmitButton'
 
 import { z } from 'zod'
 import { showToast } from '@/utils/toast'
+import { productsCacheTime } from '@/constants/globalConfig'
 
 export const updateProductSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
@@ -46,15 +47,17 @@ function EditProductPage() {
   const { data: product, isLoading: isLoadingProduct } = useQuery({
     queryKey: ['product', productId],
     queryFn: () => getProduct(Number(productId)),
+    staleTime: productsCacheTime,
   })
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
+    gcTime: Infinity,
+    staleTime: Infinity,
   })
 
   const {
-    watch,
     register,
     handleSubmit,
     formState: { errors },
