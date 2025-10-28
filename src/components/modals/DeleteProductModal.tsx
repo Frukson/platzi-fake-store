@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { deleteProduct } from '@/api/products'
-import type { Product } from '@/types/product.types'
+import { showToast } from '@/utils/toast'
 
 interface DeleteProductModalProps {
   isOpen: boolean
@@ -23,38 +23,10 @@ export default function DeleteProductModal({
 
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
-    onMutate: async () => {
-      // Cancel outgoing queries
-      await queryClient.cancelQueries({ queryKey: ['products'] })
-
-      // Snapshot previous value
-      const previousProducts = queryClient.getQueryData<Product[]>(['products'])
-
-      // Optimistically update
-      queryClient.setQueryData<Product[]>(['products'], (old = []) =>
-        old.filter((p) => p.id !== productId),
-      )
-
-      onClose()
-
-      return { previousProducts }
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      if (context?.previousProducts) {
-        queryClient.setQueryData(['products'], context.previousProducts)
-      }
-      onClose()
-      console.error('Failed to delete product:', err)
-    },
-    onSettled: () => {
-      // Refetch to ensure sync with server
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-      onClose()
-    },
     onSuccess: () => {
+      showToast.success('Product deleted successfully!')
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      onClose()
+      handleClose()
       navigate({ to: '/' })
     },
   })
@@ -62,7 +34,7 @@ export default function DeleteProductModal({
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !deleteMutation.isPending) {
-        onClose()
+        handleClose()
       }
     }
 
@@ -79,8 +51,13 @@ export default function DeleteProductModal({
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (modalRef.current === e.target && !deleteMutation.isPending) {
-      onClose()
+      handleClose()
     }
+  }
+
+  const handleClose = () => {
+    deleteMutation.reset()
+    onClose()
   }
 
   const handleConfirm = () => {
@@ -144,7 +121,7 @@ export default function DeleteProductModal({
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={deleteMutation.isPending}
             className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 focus:ring-4 focus:ring-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >

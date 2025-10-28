@@ -9,6 +9,7 @@ import FormInput from '@/components/forms/FormInput'
 import SubmitButton from '@/components/forms/SubmitButton'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import { useEffect, useState } from 'react'
+import { showToast } from '@/utils/toast'
 
 const loginSchema = z.object({
   email: z
@@ -52,8 +53,8 @@ export function LoginPage() {
 
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginRequest) => postLogin(credentials),
-    onSuccess: (data) => {
-      console.log('Login successful:', data)
+    onSuccess: () => {
+      showToast.success('Login successful!')
       navigate({ to: '/' })
     },
   })

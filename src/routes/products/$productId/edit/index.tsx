@@ -13,6 +13,7 @@ import FormTextArea from '@/components/forms/FormTextArea'
 import SubmitButton from '@/components/forms/SubmitButton'
 
 import { z } from 'zod'
+import { showToast } from '@/utils/toast'
 
 export const updateProductSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
@@ -69,8 +70,6 @@ function EditProductPage() {
     },
   })
 
-  const data = watch()
-
   useEffect(() => {
     if (product) {
       const formData = {
@@ -91,6 +90,7 @@ function EditProductPage() {
       const updatedProduct = await getProduct(Number(productId))
       queryClient.setQueryData(['product', productId], updatedProduct)
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      showToast.success('Product updated successfully!')
       navigate({ to: '/products/$productId', params: { productId } })
     },
   })

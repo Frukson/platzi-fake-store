@@ -10,6 +10,7 @@ import FormTextArea from '@/components/forms/FormTextArea'
 import SubmitButton from '@/components/forms/SubmitButton'
 import { z } from 'zod'
 import ErrorMessage from '@/components/ui/ErrorMessage'
+import { showToast } from '@/utils/toast'
 
 const createProductSchema = z.object({
   title: z
@@ -79,6 +80,7 @@ function CreateProductPage() {
     onSuccess: (data) => {
       // Invalidate products query and navigate to the new product page
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      showToast.success('Product created successfully!')
       navigate({
         to: '/products/$productId',
         params: { productId: String(data.id) },
